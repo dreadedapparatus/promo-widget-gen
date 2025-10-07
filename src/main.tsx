@@ -6,10 +6,7 @@ import './index.css';
 // Fix: Add useEffect to the React import.
 import React, { useState, useCallback, useRef, useEffect, useMemo } from 'react';
 import ReactDOM from 'react-dom/client';
-// Fix: Removed incorrect import as all functions are defined in this file.
-
-// Assume SheetJS is loaded globally from a script in index.html
-declare var XLSX: any;
+import * as XLSX from 'xlsx';
 
 // --- TYPE DEFINITIONS ---
 export interface Product {
@@ -113,7 +110,8 @@ const FileUploader: React.FC<{ onProcessFile: (products: Product[]) => void; onE
                     const worksheet = workbook.Sheets[sheetName];
                     if (!worksheet) continue;
 
-                    const sheetDataAsArray = XLSX.utils.sheet_to_json(worksheet, { header: 1, defval: "" });
+                    // FIX: Cast the result of sheet_to_json to any[][] to inform TypeScript of the data structure (an array of arrays), preventing a '.map' error on an 'unknown' type.
+                    const sheetDataAsArray = XLSX.utils.sheet_to_json(worksheet, { header: 1, defval: "" }) as any[][];
                     let headerRowIndex = -1;
 
                     for (let i = 0; i < Math.min(10, sheetDataAsArray.length); i++) {
