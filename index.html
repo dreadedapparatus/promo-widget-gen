@@ -9,9 +9,17 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- SheetJS for XLSX parsing -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script 
+      src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"
+      integrity="sha512-BMIFH0QGwPdinbGu7AraCzG9T4hKEkcsbbr+Uqv8IY3G5+JTssVMDfGFbALiRnwIFGuRDUWzpsaeQJEaifBoIQ=="
+      crossorigin="anonymous"
+    ></script>
     <!-- Babel for in-browser JSX/TSX transpilation -->
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script 
+      src="https://unpkg.com/@babel/standalone/babel.min.js"
+      integrity="sha384-dpEu7+Lp3U/2B2+xQjXc4cTf7GvM+z2BwYkO+hp2uYVb0pP+1Ia5aRdtcBeJHwha"
+      crossorigin="anonymous"
+    ></script>
     <link rel="stylesheet" href="index.css" />
   <script type="importmap">
 {
@@ -22,7 +30,6 @@
   }
 }
 </script>
-<link rel="stylesheet" href="/index.css">
 </head>
   <body>
     <div id="root"></div>
@@ -32,6 +39,5 @@
       - data-type="module" tells Babel the script uses ES Modules (import/export).
     -->
     <script type="text/babel" data-presets="react,typescript" data-type="module" src="index.tsx"></script>
-  <script type="module" src="/index.tsx"></script>
-</body>
+  </body>
 </html>
