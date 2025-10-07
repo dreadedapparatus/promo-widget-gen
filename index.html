@@ -8,36 +8,28 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <!-- SheetJS for XLSX parsing -->
+    <!-- SheetJS for XLSX parsing (loaded globally) -->
     <script 
       src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"
       integrity="sha512-BMIFH0QGwPdinbGu7AraCzG9T4hKEkcsbbr+Uqv8IY3G5+JTssVMDfGFbALiRnwIFGuRDUWzpsaeQJEaifBoIQ=="
       crossorigin="anonymous"
     ></script>
-    <!-- Babel for in-browser JSX/TSX transpilation -->
-    <script 
-      src="https://unpkg.com/@babel/standalone/babel.min.js"
-      integrity="sha384-dpEu7+Lp3U/2B2+xQjXc4cTf7GvM+z2BwYkO+hp2uYVb0pP+1Ia5aRdtcBeJHwha"
-      crossorigin="anonymous"
-    ></script>
-    <link rel="stylesheet" href="./index.css" />
   <script type="importmap">
 {
   "imports": {
-    "react": "https://aistudiocdn.com/react@^19.2.0",
     "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
-    "react/": "https://aistudiocdn.com/react@^19.2.0/"
+    "react/": "https://aistudiocdn.com/react@^19.2.0/",
+    "vite": "https://aistudiocdn.com/vite@^7.1.9",
+    "react": "https://aistudiocdn.com/react@^19.2.0",
+    "@vitejs/plugin-react": "https://aistudiocdn.com/@vitejs/plugin-react@^5.0.4"
   }
 }
 </script>
+<link rel="stylesheet" href="/index.css">
 </head>
   <body>
     <div id="root"></div>
-    <!-- 
-      - type="text/babel" tells the browser to hand this script to Babel.
-      - data-presets="react,typescript" tells Babel to use plugins for JSX and TypeScript.
-      - data-type="module" tells Babel the script uses ES Modules (import/export).
-    -->
-    <script type="text/babel" data-presets="react,typescript" data-type="module" src="./index.tsx"></script>
-  </body>
+    <script type="module" src="/src/main.tsx"></script>
+  <script type="module" src="/index.tsx"></script>
+</body>
 </html>
