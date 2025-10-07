@@ -334,6 +334,7 @@ const FilterBar: React.FC<{ brands: [string, string][]; hasAnyFlash: boolean; ac
 const WidgetPreview: React.FC<{ products: Product[]; options: AppearanceOptions }> = ({ products, options }) => {
     const [activeFilter, setActiveFilter] = useState<Filter>({ type: 'all' });
     const widgetId = useMemo(() => 'promo-widget-preview-' + Date.now(), []);
+    const ctaTextColor = useMemo(() => getTextColorForBg(options.accentColor), [options.accentColor]);
 
     const brands = useMemo(() => [...new Map(products.map(p => [p['brand name'], p['brand logo url']])).entries()]
         .filter(([name, url]) => name && url) as [string, string][], [products]);
@@ -384,7 +385,10 @@ const WidgetPreview: React.FC<{ products: Product[]; options: AppearanceOptions 
 
     return (
         <div 
-            style={{ '--promo-widget-accent-color': options.accentColor } as React.CSSProperties} 
+            style={{ 
+                '--promo-widget-accent-color': options.accentColor,
+                '--promo-widget-cta-text-color': ctaTextColor,
+            } as React.CSSProperties} 
             data-theme={options.theme} 
             data-corners={options.cornerRadius}
             data-columns={options.columns}
@@ -541,6 +545,26 @@ function parseLocalYMD(ymd: string): Date | null {
     return isNaN(d.valueOf()) ? null : d;
 }
 
+/**
+ * Determines whether to use black or white text on a given hex background color for best contrast.
+ * @param hexColor The background color in hex format (e.g., "#RRGGBB").
+ * @returns The color string "#000000" (black) or "#ffffff" (white).
+ */
+function getTextColorForBg(hexColor: string): string {
+    if (!hexColor || hexColor.length < 4) return '#ffffff'; // Default to white for invalid input
+    let hex = hexColor.startsWith('#') ? hexColor.substring(1) : hexColor;
+    if (hex.length === 3) {
+      hex = hex.split('').map(char => char + char).join('');
+    }
+    const r = parseInt(hex.substring(0, 2), 16);
+    const g = parseInt(hex.substring(2, 4), 16);
+    const b = parseInt(hex.substring(4, 6), 16);
+    // Formula for calculating luminance
+    const luminance = (0.299 * r + 0.587 * g + 0.114 * b);
+    // Use black text on light backgrounds, white text on dark backgrounds
+    return luminance > 149 ? '#000000' : '#ffffff';
+}
+
 const WIDGET_CSS = `
   :root {
     --card-bg: #fff;
@@ -625,7 +649,7 @@ const WIDGET_CSS = `
   .promo-price-item.dealer-price .promo-price-value { font-weight: 800; color: var(--dealer-price-color); font-size: 1.6em; }
   .promo-price-item.elite-price .promo-price-value { font-weight: 700; color: var(--elite-price-color); font-size: 1.05em; }
   .promo-product-cta-container { margin-top: auto; }
-  .promo-product-cta { display: block; width: 100%; padding: 14px; background-color: var(--promo-widget-accent-color); color: #fff; text-align: center; text-decoration: none; border-radius: 8px; font-weight: 700; font-size: 1.1em; transition: filter 0.2s, transform 0.2s; box-sizing: border-box; animation: pulse 2s infinite; }
+  .promo-product-cta { display: block; width: 100%; padding: 14px; background-color: var(--promo-widget-accent-color); color: var(--promo-widget-cta-text-color); text-align: center; text-decoration: none; border-radius: 8px; font-weight: 700; font-size: 1.1em; transition: filter 0.2s, transform 0.2s; box-sizing: border-box; animation: pulse 2s infinite; }
   .promo-product-cta:hover { filter: brightness(90%); transform: scale(1.03); animation: none; }
 `;
 
@@ -635,6 +659,7 @@ export function generateWidgetEmbedCode(products: Product[], options: Appearance
         .filter(([name, url]) => name && url);
     const hasAnyFlash = products.some(p => parseBoolean(p['flash sale']));
     const widgetId = 'promo-widget-' + Date.now() + Math.random().toString(36).substring(2);
+    const ctaTextColor = getTextColorForBg(accentColor);
 
     const showFilterBar = (brands.length > 1) || hasAnyFlash;
     const filterHtml = showFilterBar ? `
@@ -739,7 +764,7 @@ export function generateWidgetEmbedCode(products: Product[], options: Appearance
   })();
 <\/script>`;
 
-    const cssStyle = `<style>:root { --promo-widget-accent-color: ${escapeHtml(accentColor)}; } ${WIDGET_CSS}</style>`;
+    const cssStyle = `<style>:root { --promo-widget-accent-color: ${escapeHtml(accentColor)}; --promo-widget-cta-text-color: ${escapeHtml(ctaTextColor)}; } ${WIDGET_CSS}</style>`;
 
     let productCardsHtml = "";
     let idx = 0;
