@@ -1,5 +1,5 @@
 {
-  "name": "React Promo Widget Generator",
-  "description": "An application to generate an embeddable HTML promotion widget from an XLSX or CSV file, featuring support for flash sales and brand filtering.",
+  "name": "PromoWidget2",
+  "description": "Make responsive promo widgets",
   "requestFramePermissions": []
 }
