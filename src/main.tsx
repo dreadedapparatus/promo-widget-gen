@@ -258,22 +258,27 @@ const CodeOutput: React.FC<{ code: string }> = ({ code }) => {
 const ProductCard: React.FC<{ product: Product; widgetId: string; idx: number; showItemNumber: boolean; }> = ({ product, widgetId, idx, showItemNumber }) => {
     const [isExpanded, setIsExpanded] = useState(false);
     
-    const name = escapeHtml(product['product name']);
-    const itemNum = escapeHtml(product['item number']);
+    // Values to be rendered as text content by React should not be pre-escaped.
+    // React handles this automatically to prevent XSS attacks.
+    const name = product['product name'];
+    const itemNum = product['item number'];
     const descriptionText = String(product['product description'] || '');
-    const descriptionHtml = escapeHtml(descriptionText);
-    const brandName = escapeHtml(product['brand name']);
-    const brandLogoUrl = escapeHtml(product['brand logo url']);
-    const specialPromoText = escapeHtml(product['special promo text']);
-    const imgUrl = escapeHtml(product['image url']);
-    const productUrl = escapeHtml(product['product url']);
+    const brandName = product['brand name'];
+    const specialPromoText = product['special promo text'];
+    const flashBadgeText = product['flash badge text'] || 'FLASH SALE';
+
+    // URLs and attributes are also handled safely by React.
+    const brandLogoUrl = product['brand logo url'];
+    const imgUrl = product['image url'];
+    const productUrl = product['product url'];
+
     const getPrice = (value: any) => { const s = String(value || '').trim(); if (!s) return null; const num = parseFloat(s.replace(/[^0-9.]/g, '')); return isNaN(num) ? null : num; };
     const msrp = getPrice(product['msrp']);
     const map = getPrice(product['map']);
     const dealerPrice = getPrice(product['dealer price']);
     const elitePrice = getPrice(product['elite dealer price']);
     const isFlash = parseBoolean(product['flash sale']);
-    const flashBadgeText = escapeHtml(product['flash badge text']) || 'FLASH SALE';
+    
     const badgeText = specialPromoText || (isFlash ? flashBadgeText : '');
     const badgeHtml = badgeText ? <div className={`promo-special-badge ${isFlash ? 'flash' : ''}`}>{badgeText}</div> : null;
     const descriptionId = `promo-desc-${widgetId}-${idx}`;
@@ -293,7 +298,7 @@ const ProductCard: React.FC<{ product: Product; widgetId: string; idx: number; s
                     {brandLogoUrl ? <img src={brandLogoUrl} alt={`${brandName} Logo`} className="promo-brand-logo" loading="lazy" /> : ''}
                 </div>
                 {showItemNumber && <p className="promo-product-item">Item #: {itemNum}</p>}
-                <p className={`promo-product-description ${isExpanded ? 'expanded' : ''}`} id={descriptionId}>{descriptionHtml}</p>
+                <p className={`promo-product-description ${isExpanded ? 'expanded' : ''}`} id={descriptionId}>{descriptionText}</p>
                 {seeMoreLink}
                 <div className="promo-product-pricing">{msrpHtml}{mapHtml}{dealerHtml}{eliteHtml}</div>
                 <div className="promo-product-cta-container"><a href={productUrl} target="_blank" rel="noopener noreferrer" className="promo-product-cta">View Deal</a></div>
